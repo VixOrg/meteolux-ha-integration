@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meteolux-tests
+    volumes:
+      # Mount source code for live updates during development
+      - ./custom_components:/app/custom_components
+      - ./tests:/app/tests
+      # Mount coverage output directory
+      - ./htmlcov:/app/htmlcov
+      - ./coverage.xml:/app/coverage.xml
+    environment:
+      - PYTHONPATH=/app
+    # Override default command if needed
+    command: pytest --cov=custom_components.meteolux --cov-report=xml --cov-report=term --cov-report=html -v tests/

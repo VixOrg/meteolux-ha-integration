@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python cache
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Test outputs
+htmlcov/
+.coverage
+coverage.xml
+.pytest_cache/
+*.cover
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+docs/
+
+# Docker files themselves
+Dockerfile
+docker-compose.yml
+.dockerignore

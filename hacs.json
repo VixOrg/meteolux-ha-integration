@@ -1,0 +1,6 @@
+{
+  "name": "MeteoLux Weather Integration",
+  "render_readme": true,
+  "content_in_root": false,
+  "homeassistant": "2023.1.0"
+}

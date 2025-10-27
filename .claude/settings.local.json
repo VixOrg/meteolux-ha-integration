@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(identify:*)",
+      "Bash(convert:*)",
+      "Bash(python:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:metapi.ana.lu)",
+      "Bash(ruff check:*)",
+      "WebSearch",
+      "WebFetch(domain:developers.home-assistant.io)",
+      "WebFetch(domain:www.home-assistant.io)",
+      "Bash(git push:*)",
+      "Bash(git show:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

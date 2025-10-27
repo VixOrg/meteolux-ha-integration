@@ -1,0 +1,2 @@
+# Requirements for testing
+pytest-homeassistant-custom-component==0.13.294

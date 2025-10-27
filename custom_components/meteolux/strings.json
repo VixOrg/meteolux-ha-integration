@@ -1,0 +1,105 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up MeteoLux",
+        "description": "Configure MeteoLux weather integration for Luxembourg",
+        "data": {
+          "language": "Language",
+          "location": "Location",
+          "name": "Location Name",
+          "update_interval_current": "Current Conditions Update",
+          "update_interval_hourly": "Hourly Forecast Update",
+          "update_interval_daily": "Daily Forecast Update"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure {name}",
+        "description": "Update MeteoLux configuration",
+        "data": {
+          "language": "Language",
+          "location": "Location",
+          "name": "Location Name",
+          "update_interval_current": "Current Conditions Update",
+          "update_interval_hourly": "Hourly Forecast Update",
+          "update_interval_daily": "Daily Forecast Update"
+        }
+      },
+      "reconfigure_entity_ids": {
+        "title": "Entity ID Options",
+        "description": "Integration name changed from '{old_name}' to '{new_name}'.",
+        "data": {
+          "entity_id_action": "Entity ID Handling"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to MeteoLux API",
+      "latitude_out_of_bounds": "Latitude must be between 49.4 and 50.2 (Luxembourg boundaries)",
+      "longitude_out_of_bounds": "Longitude must be between 5.7 and 6.5 (Luxembourg boundaries)",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "This location is already configured",
+      "reconfigure_successful": "Configuration updated successfully"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      },
+      "apparent_temperature": {
+        "name": "Apparent temperature"
+      },
+      "wind_speed": {
+        "name": "Wind speed"
+      },
+      "wind_gusts": {
+        "name": "Wind gusts"
+      },
+      "wind_direction": {
+        "name": "Wind direction"
+      },
+      "precipitation": {
+        "name": "Precipitation"
+      },
+      "snow": {
+        "name": "Snow"
+      },
+      "condition": {
+        "name": "Condition"
+      },
+      "condition_text": {
+        "name": "Condition text"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
+      "pressure": {
+        "name": "Pressure"
+      },
+      "uv_index": {
+        "name": "UV index"
+      },
+      "cloud_cover": {
+        "name": "Cloud cover"
+      },
+      "today": {
+        "name": "Today"
+      },
+      "location": {
+        "name": "Location"
+      },
+      "temperature_high": {
+        "name": "Temperature high day {day}"
+      },
+      "temperature_low": {
+        "name": "Temperature low day {day}"
+      },
+      "precipitation_forecast": {
+        "name": "Precipitation day {day}"
+      }
+    }
+  }
+}

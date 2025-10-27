@@ -1,0 +1,452 @@
+openapi: 3.0.3
+info:
+  title: MeteoLux Weather API
+  description: |-
+    This contract defines the MeteoLux API endpoints used by the MeteoLux Home Assistant integration.
+    The API provides weather data for Luxembourg under Creative Commons Public Domain Dedication (CC0).
+
+    **Base URL**: `https://metapi.ana.lu/api/v1`
+
+    **Contract Purpose**: Validate that the MeteoLux API structure matches integration expectations.
+    Contract tests will verify request/response schemas to catch breaking API changes early.
+  version: 1.7.1
+  contact:
+    name: MeteoLux
+    url: https://www.meteolux.lu/
+  license:
+    name: CC0 (Public Domain)
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+
+servers:
+  - url: https://metapi.ana.lu/api/v1
+    description: MeteoLux production API
+
+paths:
+  /metapp/weather:
+    get:
+      summary: Get weather data for a location
+      description: |-
+        Fetch current weather conditions and forecasts (hourly, daily, 10-day trend) for a specific location in Luxembourg.
+        Location can be specified by coordinates (lat/long) or city ID.
+      operationId: getWeather
+      parameters:
+        - name: langcode
+          in: query
+          description: Language for weather descriptions
+          required: false
+          schema:
+            type: string
+            enum: [en, fr, de, lb]
+            default: fr
+        - name: city
+          in: query
+          description: City ID from bookmarks API (mutually exclusive with lat/long)
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: lat
+          in: query
+          description: Latitude (used with 'long' parameter)
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: -90
+            maximum: 90
+            example: 49.6116
+        - name: long
+          in: query
+          description: Longitude (used with 'lat' parameter)
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: -180
+            maximum: 180
+            example: 6.1319
+      responses:
+        '200':
+          description: Weather data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherResponse'
+        '400':
+          description: Bad request (invalid parameters)
+        '503':
+          description: Service unavailable
+
+  /metapp/bookmarks:
+    get:
+      summary: Get list of Luxembourg cities
+      description: |-
+        Fetch a list of 121 Luxembourg cities/locations with their coordinates.
+        Used to populate the city dropdown in the integration config flow.
+      operationId: getBookmarks
+      responses:
+        '200':
+          description: City list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LuxembourgCity'
+        '503':
+          description: Service unavailable
+
+components:
+  schemas:
+    WeatherResponse:
+      type: object
+      required:
+        - forecast
+        - data
+      properties:
+        city:
+          type: string
+          description: City name
+          example: "Luxembourg"
+        forecast:
+          $ref: '#/components/schemas/Forecast'
+        data:
+          $ref: '#/components/schemas/GraphicalData'
+        vigilances:
+          type: array
+          description: Weather warnings/alerts
+          items:
+            type: object
+        roadStatus:
+          type: object
+          description: Road conditions
+        ephemeris:
+          $ref: '#/components/schemas/Ephemeris'
+        radar:
+          type: object
+          description: Radar imagery data
+        satellite:
+          type: object
+          description: Satellite imagery data
+
+    Forecast:
+      type: object
+      required:
+        - current
+        - hourly
+        - daily
+      properties:
+        current:
+          $ref: '#/components/schemas/CurrentWeather'
+        hourly:
+          type: array
+          description: Hourly forecast for next 24-48 hours
+          items:
+            $ref: '#/components/schemas/HourlyWeather'
+        daily:
+          type: array
+          description: Daily forecast for next 5 days
+          items:
+            $ref: '#/components/schemas/DailyWeather'
+
+    CurrentWeather:
+      type: object
+      required:
+        - date
+        - icon
+        - temperature
+        - wind
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: Observation timestamp (ISO 8601)
+          example: "2025-10-28T14:30:00Z"
+        icon:
+          $ref: '#/components/schemas/WeatherIcon'
+        temperature:
+          type: number
+          format: float
+          description: Current temperature in °C
+          example: 10.5
+        humidex:
+          type: number
+          format: float
+          description: Apparent temperature (feels-like) in °C
+          nullable: true
+          example: 8.2
+        wind:
+          $ref: '#/components/schemas/Wind'
+        rain:
+          type: number
+          format: float
+          description: Precipitation in mm
+          nullable: true
+          example: 0.5
+        snow:
+          type: number
+          format: float
+          description: Snowfall in mm
+          nullable: true
+          example: 0.0
+
+    HourlyWeather:
+      type: object
+      required:
+        - date
+        - icon
+        - temperature
+        - wind
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: Forecast timestamp (ISO 8601)
+          example: "2025-10-28T15:00:00Z"
+        icon:
+          $ref: '#/components/schemas/WeatherIcon'
+        temperature:
+          type: number
+          format: float
+          description: Forecast temperature in °C
+          example: 11.0
+        wind:
+          $ref: '#/components/schemas/Wind'
+        rain:
+          type: number
+          format: float
+          description: Precipitation in mm
+          nullable: true
+          example: 0.2
+        snow:
+          type: number
+          format: float
+          description: Snowfall in mm
+          nullable: true
+          example: 0.0
+
+    DailyWeather:
+      type: object
+      required:
+        - date
+        - icon
+        - temperatureMin
+        - temperatureMax
+        - wind
+      properties:
+        date:
+          type: string
+          format: date
+          description: Forecast date (ISO 8601)
+          example: "2025-10-29"
+        icon:
+          $ref: '#/components/schemas/WeatherIcon'
+        temperatureMin:
+          type: number
+          format: float
+          description: Minimum temperature in °C
+          example: 5.0
+        temperatureMax:
+          type: number
+          format: float
+          description: Maximum temperature in °C
+          example: 12.0
+        wind:
+          $ref: '#/components/schemas/Wind'
+        rain:
+          type: number
+          format: float
+          description: Precipitation in mm
+          nullable: true
+          example: 1.5
+        snow:
+          type: number
+          format: float
+          description: Snowfall in mm
+          nullable: true
+          example: 0.0
+        sunshine:
+          type: integer
+          description: Sunshine duration in hours
+          nullable: true
+          example: 6
+        uvIndex:
+          type: integer
+          description: UV index (0-12 scale)
+          nullable: true
+          minimum: 0
+          maximum: 12
+          example: 3
+
+    WeatherIcon:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: Weather icon ID (1-50, maps to HA condition)
+          minimum: 1
+          maximum: 50
+          example: 5
+        name:
+          type: string
+          description: Weather description in selected language
+          example: "Cloudy"
+
+    Wind:
+      type: object
+      required:
+        - direction
+        - speed
+      properties:
+        direction:
+          type: string
+          description: Wind direction (N, NE, E, SE, S, SO, O, NO)
+          enum: [N, NE, E, SE, S, SO, O, NO]
+          example: "SO"
+        speed:
+          type: string
+          description: Wind speed (may be single value or range)
+          example: "10 km/h"
+        gusts:
+          type: string
+          description: Wind gusts
+          nullable: true
+          example: "25 km/h"
+
+    GraphicalData:
+      type: object
+      required:
+        - forecast
+      properties:
+        history:
+          type: array
+          description: Historical climatology data
+          items:
+            $ref: '#/components/schemas/ClimatologyEntry'
+        forecast:
+          type: array
+          description: 10-day high-level forecast trend
+          items:
+            $ref: '#/components/schemas/ForecastTrendEntry'
+
+    ForecastTrendEntry:
+      type: object
+      required:
+        - date
+        - minTemp
+        - maxTemp
+        - precipitation
+      properties:
+        date:
+          type: string
+          format: date
+          description: Forecast date
+          example: "2025-10-29"
+        minTemp:
+          type: number
+          format: float
+          description: Minimum temperature in °C
+          example: 5.0
+        maxTemp:
+          type: number
+          format: float
+          description: Maximum temperature in °C
+          example: 12.0
+        precipitation:
+          type: number
+          format: float
+          description: Precipitation in mm
+          example: 1.5
+
+    ClimatologyEntry:
+      type: object
+      description: Historical climatology data (optional, not used in MVP)
+      properties:
+        date:
+          type: string
+        minTemp:
+          type: number
+        maxTemp:
+          type: number
+        precipitation:
+          type: number
+        meanTemp:
+          type: number
+        sunshine:
+          type: integer
+
+    Ephemeris:
+      type: object
+      description: Sunrise, sunset, moon phases (optional, not used in MVP)
+      properties:
+        sunrise:
+          type: string
+        sunset:
+          type: string
+        moonrise:
+          type: string
+        moonset:
+          type: string
+        uvIndex:
+          type: integer
+
+    LuxembourgCity:
+      type: object
+      required:
+        - id
+        - name
+        - lat
+        - long
+        - region
+        - canton
+        - domain
+      properties:
+        id:
+          type: integer
+          description: Unique city ID
+          example: 1
+        name:
+          type: string
+          description: City name
+          example: "Luxembourg"
+        lat:
+          type: number
+          format: float
+          description: Latitude
+          example: 49.6116
+        long:
+          type: number
+          format: float
+          description: Longitude (API uses 'long', not 'lon')
+          example: 6.1319
+        region:
+          type: string
+          description: Region (N for North, S for South)
+          enum: [N, S]
+          example: "S"
+        canton:
+          type: string
+          description: Administrative canton
+          example: "Luxembourg"
+        domain:
+          type: string
+          description: Type of location (villes=cities, lieu=places, fluvial=river)
+          enum: [villes, lieu, fluvial]
+          example: "villes"
+        temperature:
+          type: number
+          format: float
+          description: Current temperature at city
+          nullable: true
+          example: 10.0
+        icon:
+          $ref: '#/components/schemas/WeatherIcon'
+          nullable: true
+        nearestCity:
+          type: string
+          description: Nearest city reference
+          nullable: true
+

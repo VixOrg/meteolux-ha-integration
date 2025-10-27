@@ -1,0 +1,291 @@
+openapi: 3.0.3
+info:
+  title: OpenStreetMap Nominatim Geocoding API
+  description: |-
+    This contract defines the OpenStreetMap Nominatim API endpoints used by the MeteoLux Home Assistant integration
+    for address geocoding (converting addresses to coordinates).
+
+    **Base URL**: `https://nominatim.openstreetmap.org`
+
+    **Usage Policy**: https://operations.osmfoundation.org/policies/nominatim/
+    - User-Agent header required: `MeteoLuxHA/{version}`
+    - Rate limit: 1 request/second (enforced by integration)
+    - Results cached in config entry to avoid redundant requests
+
+    **Contract Purpose**: Validate that Nominatim API structure matches integration expectations.
+    Contract tests will verify request/response schemas.
+  version: 1.0.0
+  contact:
+    name: OpenStreetMap Foundation
+    url: https://www.openstreetmap.org/
+  license:
+    name: ODbL (Open Database License)
+    url: https://www.openstreetmap.org/copyright
+
+servers:
+  - url: https://nominatim.openstreetmap.org
+    description: Nominatim production API
+
+paths:
+  /search:
+    get:
+      summary: Search for locations by address
+      description: |-
+        Geocode an address string to coordinates. Used when user enters an address in the config flow.
+        Integration will validate that returned coordinates fall within Luxembourg boundaries.
+      operationId: searchAddress
+      parameters:
+        - name: q
+          in: query
+          description: Address query string
+          required: true
+          schema:
+            type: string
+            example: "1 Place Guillaume II, Luxembourg"
+        - name: format
+          in: query
+          description: Response format
+          required: true
+          schema:
+            type: string
+            enum: [json, jsonv2, geojson, geocodejson]
+            default: json
+        - name: addressdetails
+          in: query
+          description: Include detailed address breakdown
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of results
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 1
+        - name: countrycodes
+          in: query
+          description: Restrict results to specific countries (ISO 3166-1 alpha-2)
+          required: false
+          schema:
+            type: string
+            example: "lu"
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResult'
+        '400':
+          description: Bad request (invalid parameters)
+        '429':
+          description: Too many requests (rate limit exceeded)
+        '503':
+          description: Service unavailable
+
+  /reverse:
+    get:
+      summary: Reverse geocode coordinates to address
+      description: |-
+        Convert coordinates to an address. Used internally for bidirectional location sync
+        (when user enters coordinates, update address field).
+      operationId: reverseGeocode
+      parameters:
+        - name: lat
+          in: query
+          description: Latitude
+          required: true
+          schema:
+            type: number
+            format: float
+            minimum: -90
+            maximum: 90
+            example: 49.6116
+        - name: lon
+          in: query
+          description: Longitude
+          required: true
+          schema:
+            type: number
+            format: float
+            minimum: -180
+            maximum: 180
+            example: 6.1319
+        - name: format
+          in: query
+          description: Response format
+          required: true
+          schema:
+            type: string
+            enum: [json, jsonv2, geojson, geocodejson]
+            default: json
+        - name: addressdetails
+          in: query
+          description: Include detailed address breakdown
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+            default: 1
+      responses:
+        '200':
+          description: Reverse geocoding result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReverseResult'
+        '400':
+          description: Bad request (invalid parameters)
+        '429':
+          description: Too many requests (rate limit exceeded)
+        '503':
+          description: Service unavailable
+
+components:
+  schemas:
+    SearchResult:
+      type: object
+      required:
+        - lat
+        - lon
+        - display_name
+        - class
+        - type
+      properties:
+        place_id:
+          type: integer
+          description: Unique place ID
+          example: 123456
+        licence:
+          type: string
+          description: License information
+          example: "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright"
+        osm_type:
+          type: string
+          description: OSM object type (node, way, relation)
+          enum: [node, way, relation]
+          example: "node"
+        osm_id:
+          type: integer
+          description: OSM object ID
+          example: 789012
+        lat:
+          type: string
+          description: Latitude (returned as string by Nominatim)
+          example: "49.6116"
+        lon:
+          type: string
+          description: Longitude (returned as string by Nominatim)
+          example: "6.1319"
+        display_name:
+          type: string
+          description: Full display name/address
+          example: "1, Place Guillaume II, Ville-Haute, Luxembourg, Canton Luxembourg, 2011, Luxembourg"
+        class:
+          type: string
+          description: OSM tag class
+          example: "building"
+        type:
+          type: string
+          description: OSM tag type
+          example: "yes"
+        importance:
+          type: number
+          format: float
+          description: Result importance score (0-1)
+          example: 0.631
+        address:
+          $ref: '#/components/schemas/Address'
+          description: Detailed address breakdown (if addressdetails=1)
+        boundingbox:
+          type: array
+          description: Bounding box [min_lat, max_lat, min_lon, max_lon]
+          items:
+            type: string
+          minItems: 4
+          maxItems: 4
+          example: ["49.6110", "49.6120", "6.1310", "6.1330"]
+
+    ReverseResult:
+      type: object
+      required:
+        - lat
+        - lon
+        - display_name
+      properties:
+        place_id:
+          type: integer
+          description: Unique place ID
+          example: 123456
+        licence:
+          type: string
+          description: License information
+        osm_type:
+          type: string
+          enum: [node, way, relation]
+          example: "node"
+        osm_id:
+          type: integer
+          example: 789012
+        lat:
+          type: string
+          description: Latitude
+          example: "49.6116"
+        lon:
+          type: string
+          description: Longitude
+          example: "6.1319"
+        display_name:
+          type: string
+          description: Full address
+          example: "Luxembourg, Canton Luxembourg, Luxembourg"
+        address:
+          $ref: '#/components/schemas/Address'
+          description: Detailed address breakdown
+        boundingbox:
+          type: array
+          items:
+            type: string
+          minItems: 4
+          maxItems: 4
+
+    Address:
+      type: object
+      description: Detailed address components
+      properties:
+        house_number:
+          type: string
+          example: "1"
+        road:
+          type: string
+          example: "Place Guillaume II"
+        suburb:
+          type: string
+          example: "Ville-Haute"
+        city:
+          type: string
+          example: "Luxembourg"
+        county:
+          type: string
+          example: "Canton Luxembourg"
+        state:
+          type: string
+          example: "Luxembourg"
+        postcode:
+          type: string
+          example: "2011"
+        country:
+          type: string
+          example: "Luxembourg"
+        country_code:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: "lu"
+

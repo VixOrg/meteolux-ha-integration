@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Prepare release
+    steps:
+      - name: Check out code from GitHub
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Get version from manifest
+        id: version
+        run: |
+          VERSION=$(cat custom_components/meteolux/manifest.json | jq -r '.version')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Validate version matches tag
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          MANIFEST_VERSION="${{ steps.version.outputs.version }}"
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "Error: Tag version ($TAG_VERSION) does not match manifest version ($MANIFEST_VERSION)"
+            exit 1
+          fi
+
+      - name: Create ZIP archive for HACS
+        run: |
+          cd custom_components/meteolux
+          zip -r ../../meteolux-${{ steps.version.outputs.version }}.zip .
+          cd ../..
+
+      - name: Upload ZIP to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: meteolux-${{ steps.version.outputs.version }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
