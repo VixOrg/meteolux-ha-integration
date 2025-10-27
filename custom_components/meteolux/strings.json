@@ -1,0 +1,173 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up MeteoLux",
+        "description": "Select how you want to specify your location",
+        "data": {
+          "location_method": "Location Method"
+        }
+      },
+      "city": {
+        "title": "Select City",
+        "description": "Select your city from the list of Luxembourg locations",
+        "data": {
+          "name": "Location Name",
+          "city": "City"
+        }
+      },
+      "address": {
+        "title": "Enter Address",
+        "description": "Enter a Luxembourg address. Example: {example}",
+        "data": {
+          "name": "Location Name",
+          "address": "Address"
+        }
+      },
+      "address_confirm": {
+        "title": "Confirm Location",
+        "description": "Address: {address}\nLatitude: {latitude}\nLongitude: {longitude}\n\nClick Submit to confirm this location."
+      },
+      "map": {
+        "title": "Select on Map",
+        "description": "Select your location on the map",
+        "data": {
+          "name": "Location Name",
+          "location": "Location"
+        }
+      },
+      "language": {
+        "title": "Weather Forecast Configuration",
+        "description": "Configure language and update intervals",
+        "data": {
+          "language": "Language",
+          "update_interval_current": "Current Conditions Update",
+          "update_interval_hourly": "Hourly Forecast Update",
+          "update_interval_daily": "Daily Forecast Update"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure {name}",
+        "description": "Choose what you want to reconfigure",
+        "data": {
+          "reconfigure_type": "What to reconfigure"
+        }
+      },
+      "reconfigure_location": {
+        "title": "Change Location Method",
+        "description": "Select new location method",
+        "data": {
+          "location_method": "Location Method"
+        }
+      },
+      "reconfigure_city": {
+        "title": "Change City",
+        "description": "Select new city",
+        "data": {
+          "city": "City"
+        }
+      },
+      "reconfigure_address": {
+        "title": "Change Address",
+        "description": "Enter new address",
+        "data": {
+          "address": "Address"
+        }
+      },
+      "reconfigure_map": {
+        "title": "Change Map Location",
+        "description": "Select new location on map",
+        "data": {
+          "location": "Location"
+        }
+      },
+      "reconfigure_name": {
+        "title": "Change Name",
+        "description": "Update location name",
+        "data": {
+          "name": "Location Name",
+          "regenerate_entity_ids": "Regenerate Entity IDs"
+        }
+      },
+      "reconfigure_forecast": {
+        "title": "Change Weather Forecast Settings",
+        "description": "Update language and intervals",
+        "data": {
+          "language": "Language",
+          "update_interval_current": "Current Conditions Update",
+          "update_interval_hourly": "Hourly Forecast Update",
+          "update_interval_daily": "Daily Forecast Update"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to MeteoLux API",
+      "invalid_city": "Invalid city selection",
+      "address_not_found": "Address not found. Please check the address and try again",
+      "location_outside_luxembourg": "Selected location is outside Luxembourg",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "This location is already configured",
+      "reconfigure_successful": "Configuration updated successfully. Integration will reload with new settings."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      },
+      "apparent_temperature": {
+        "name": "Apparent temperature"
+      },
+      "wind_speed": {
+        "name": "Wind speed"
+      },
+      "wind_gusts": {
+        "name": "Wind gusts"
+      },
+      "wind_direction": {
+        "name": "Wind direction"
+      },
+      "precipitation": {
+        "name": "Precipitation"
+      },
+      "snow": {
+        "name": "Snow"
+      },
+      "condition": {
+        "name": "Condition"
+      },
+      "condition_text": {
+        "name": "Condition text"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
+      "pressure": {
+        "name": "Pressure"
+      },
+      "uv_index": {
+        "name": "UV index"
+      },
+      "cloud_cover": {
+        "name": "Cloud cover"
+      },
+      "today": {
+        "name": "Today"
+      },
+      "location": {
+        "name": "Location"
+      },
+      "temperature_high": {
+        "name": "Temperature high day {day}"
+      },
+      "temperature_low": {
+        "name": "Temperature low day {day}"
+      },
+      "precipitation_forecast": {
+        "name": "Precipitation day {day}"
+      }
+    }
+  }
+}

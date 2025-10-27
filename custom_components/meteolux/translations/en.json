@@ -1,0 +1,178 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up MeteoLux Weather",
+        "description": "MeteoLux provides accurate weather forecasts for Luxembourg. Choose how you want to specify your location:",
+        "data": {
+          "location_method": "Location Method"
+        },
+        "data_description": {
+          "location_method": "Select how you want to specify your location:\n• City list: Choose from 102 Luxembourg cities\n• Address: Enter a Luxembourg address (will be geocoded)\n• Map: Pick a point on the map"
+        }
+      },
+      "city": {
+        "title": "Select City from List",
+        "description": "Select your city from the dropdown list. The list includes all 102 Luxembourg locations available through the MeteoLux API.",
+        "data": {
+          "name": "Location Name",
+          "city": "City"
+        },
+        "data_description": {
+          "name": "A friendly name for this location (e.g., 'Home', 'Office', 'Luxembourg City')",
+          "city": "Select your city from the dropdown list. Type to search."
+        }
+      },
+      "address": {
+        "title": "Enter Luxembourg Address",
+        "description": "Enter a Luxembourg address which will be converted to precise coordinates using OpenStreetMap. Example: {example}",
+        "data": {
+          "name": "Location Name",
+          "address": "Address"
+        },
+        "data_description": {
+          "name": "A friendly name for this location (e.g., 'Home', 'Office')",
+          "address": "Full Luxembourg address including street number, street name, and city"
+        }
+      },
+      "address_confirm": {
+        "title": "Confirm Geocoded Location",
+        "description": "The address has been successfully geocoded to the following coordinates:\n\nAddress: {address}\nLatitude: {latitude}\nLongitude: {longitude}\n\nPlease verify this is the correct location and click Submit to continue."
+      },
+      "map": {
+        "title": "Select Location on Map",
+        "description": "Click on the map to select your precise location in Luxembourg. You can zoom and pan to find your exact location.",
+        "data": {
+          "name": "Location Name",
+          "location": "Location"
+        },
+        "data_description": {
+          "name": "A friendly name for this location (e.g., 'Home', 'Office')",
+          "location": "Click on the map to set your location. The map is centered on Luxembourg City by default."
+        }
+      },
+      "language": {
+        "title": "Weather Forecast Configuration",
+        "description": "Configure language and update intervals for weather forecasts. Language affects how weather conditions are displayed. Update intervals control how often weather data is refreshed.",
+        "data": {
+          "language": "Language",
+          "update_interval_current": "Current Conditions Update Interval",
+          "update_interval_hourly": "Hourly Forecast Update Interval",
+          "update_interval_daily": "Daily Forecast Update Interval"
+        },
+        "data_description": {
+          "language": "Choose from English, French (Français), German (Deutsch), or Luxembourgish (Lëtzebuergesch)",
+          "update_interval_current": "How often to update current weather conditions (1-60 minutes). Lower values provide more up-to-date data but increase API requests. Default: 10 minutes.",
+          "update_interval_hourly": "How often to update hourly forecasts (5-120 minutes). Hourly forecasts typically don't change as frequently. Default: 30 minutes.",
+          "update_interval_daily": "How often to update daily forecasts (1-24 hours). Daily forecasts are stable and don't need frequent updates. Default: 6 hours."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure: {name}",
+        "description": "Choose what you want to reconfigure for this location. Changes will be applied immediately and the integration will reload.",
+        "data": {
+          "reconfigure_type": "What to reconfigure"
+        },
+        "data_description": {
+          "reconfigure_type": "Select what you want to change:\n• Location: Change city, address, or map coordinates\n• Name: Change the location name (optionally regenerate entity IDs)\n• Weather Settings: Change language and update intervals"
+        }
+      },
+      "reconfigure_location": {
+        "title": "Change Location Method",
+        "description": "Select the new location method. You can switch between city selector, address input, or map selection.",
+        "data": {
+          "location_method": "Location Method"
+        },
+        "data_description": {
+          "location_method": "Choose how you want to specify the new location"
+        }
+      },
+      "reconfigure_city": {
+        "title": "Change City",
+        "description": "Select a new city from the list of 102 Luxembourg locations.",
+        "data": {
+          "city": "City"
+        },
+        "data_description": {
+          "city": "Type to search for your city"
+        }
+      },
+      "reconfigure_address": {
+        "title": "Change Address",
+        "description": "Enter a new Luxembourg address. It will be automatically geocoded to coordinates. Example: {example}",
+        "data": {
+          "address": "Address"
+        },
+        "data_description": {
+          "address": "Full Luxembourg address including street and city"
+        }
+      },
+      "reconfigure_map": {
+        "title": "Change Map Location",
+        "description": "Click on the map to select a new location. The map shows your current location as the default.",
+        "data": {
+          "location": "Location"
+        },
+        "data_description": {
+          "location": "Click on the map to set the new location"
+        }
+      },
+      "reconfigure_name": {
+        "title": "Change Name",
+        "description": "Update the location name. Optionally regenerate entity IDs to match the new name.",
+        "data": {
+          "name": "Location Name",
+          "regenerate_entity_ids": "Regenerate Entity IDs"
+        },
+        "data_description": {
+          "name": "New friendly name for this location (e.g., 'Home', 'Office')",
+          "regenerate_entity_ids": "If enabled, entity IDs will be regenerated based on the new name. WARNING: This will break automations and dashboards that reference the old entity IDs. Leave unchecked to keep existing entity IDs."
+        }
+      },
+      "reconfigure_forecast": {
+        "title": "Change Weather Forecast Settings",
+        "description": "Update language and update intervals. Changes will be applied immediately after submission.",
+        "data": {
+          "language": "Language",
+          "update_interval_current": "Current Conditions Update Interval",
+          "update_interval_hourly": "Hourly Forecast Update Interval",
+          "update_interval_daily": "Daily Forecast Update Interval"
+        },
+        "data_description": {
+          "language": "Choose from English, French (Français), German (Deutsch), or Luxembourgish (Lëtzebuergesch)",
+          "update_interval_current": "How often to update current weather conditions (1-60 minutes). Default: 10 minutes.",
+          "update_interval_hourly": "How often to update hourly forecasts (5-120 minutes). Default: 30 minutes.",
+          "update_interval_daily": "How often to update daily forecasts (1-24 hours). Default: 6 hours."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to MeteoLux API. Please check your internet connection and try again.",
+      "invalid_city": "Invalid city selection. Please select a city from the dropdown list.",
+      "address_not_found": "The address could not be found in Luxembourg. Please check the address format and try again. Example: '1 Rue de la Gare, Luxembourg'",
+      "location_outside_luxembourg": "The selected location is outside Luxembourg boundaries. MeteoLux only provides weather data for locations within Luxembourg.",
+      "unknown": "An unexpected error occurred. Please check the Home Assistant logs for more details."
+    },
+    "abort": {
+      "already_configured": "This location is already configured. Each location can only be added once. To add weather for a different location, use a different city or coordinates.",
+      "reconfigure_successful": "Configuration updated successfully. The integration will reload automatically to apply the new language and update interval settings."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "MeteoLux Options",
+        "description": "Configure MeteoLux integration options"
+      }
+    }
+  },
+  "selector": {
+    "location_method": {
+      "options": {
+        "city": "Select from city list",
+        "address": "Enter Luxembourg address",
+        "map": "Select on map"
+      }
+    }
+  }
+}
